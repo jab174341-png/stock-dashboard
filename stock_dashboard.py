@@ -1,7 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import time
 
 st.set_page_config(page_title="실시간 주식 대시보드", layout="wide")
@@ -38,7 +38,9 @@ def get_stock_data(ticker):
 try:
     while True:
         with placeholder.container():
-            st.subheader(f"🕒 {datetime.now().strftime('%Y년 %m월 %d일 %H:%M:%S')}")
+            # 한국 시간 표시
+            kst = datetime.now(timezone.utc) + timedelta(hours=9)
+            st.subheader(f"🕒 {kst.strftime('%Y년 %m월 %d일 %H:%M:%S')} (한국 시간)")
 
             cols = st.columns(5)
             for i, (name, ticker) in enumerate(stocks.items()):

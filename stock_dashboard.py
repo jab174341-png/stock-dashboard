@@ -21,7 +21,7 @@ stocks = {
     "구글": "GOOGL"
 }
 
-selected_stock = st.sidebar.selectbox("종목 크게 보기", list(stocks.keys()), key="select_stock")
+selected_stock = st.sidebar.selectbox("종목 크게 보기", list(stocks.keys()))
 
 placeholder = st.empty()
 
@@ -47,8 +47,7 @@ try:
                     st.metric(
                         label=f"**{name}**",
                         value=f"{price:,.2f}" if price else "N/A",
-                        delta=f"{change:+.2f} ({change_pct:+.2f}%)",
-                        key=f"metric_{name}_{i}"   # 고유 key 강화
+                        delta=f"{change:+.2f} ({change_pct:+.2f}%)"
                     )
 
             st.divider()
@@ -58,16 +57,16 @@ try:
             
             col1, col2 = st.columns([1, 2])
             with col1:
-                st.metric("현재가", f"{price:,.2f}", f"{change:+.2f} ({change_pct:+.2f}%)", key="main_price")
+                st.metric("현재가", f"{price:,.2f}", f"{change:+.2f} ({change_pct:+.2f}%)")
             
             with col2:
                 fig = go.Figure(data=[go.Candlestick(x=hist.index, open=hist['Open'], high=hist['High'], low=hist['Low'], close=hist['Close'])])
                 fig.update_layout(height=400, title=f"{selected_stock} 최근 5일 차트")
-                st.plotly_chart(fig, use_container_width=True, key="price_chart")
+                st.plotly_chart(fig, use_container_width=True)
 
             st.caption("※ 1분마다 자동 업데이트 됩니다.")
 
         time.sleep(60)
 
 except Exception as e:
-    st.error(f"오류 발생: {e}")
+    st.error(f"오류: {e}")

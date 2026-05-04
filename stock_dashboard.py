@@ -27,12 +27,7 @@ stocks = {
 
 selected_stock = st.sidebar.selectbox("종목 크게 보기", list(stocks.keys()))
 
-period_options = {
-    "5일": "5d",
-    "1개월": "1mo",
-    "3개월": "3mo",
-    "6개월": "6mo"
-}
+period_options = {"5일": "5d", "1개월": "1mo", "3개월": "3mo", "6개월": "6mo"}
 selected_period_label = st.sidebar.selectbox("차트 기간 선택", list(period_options.keys()))
 selected_period = period_options[selected_period_label]
 
@@ -72,7 +67,7 @@ try:
             
             col1, col2 = st.columns([1, 2])
             with col1:
-                st.metric("현재가", f"{price:,.2f}", f"{change:+.2f} ({change_pct:+.2f}%)", key="main_metric")
+                st.metric("현재가", f"{price:,.2f}", f"{change:+.2f} ({change_pct:+.2f}%)")
             
             with col2:
                 fig = go.Figure(data=[go.Candlestick(
@@ -83,7 +78,7 @@ try:
                     close=hist['Close']
                 )])
                 fig.update_layout(height=500, title=f"{selected_stock} {selected_period_label} 차트")
-                st.plotly_chart(fig, use_container_width=True, key=f"chart_{selected_stock}")  # ← key 추가
+                st.plotly_chart(fig, use_container_width=True)
 
             st.caption("※ 1분마다 자동 업데이트 됩니다.")
 

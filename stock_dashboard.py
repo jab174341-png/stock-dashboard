@@ -18,7 +18,11 @@ stocks = {
     "테슬라": "TSLA",
     "엔비디아": "NVDA",
     "마이크로소프트": "MSFT",
-    "구글": "GOOGL"
+    "구글": "GOOGL",
+    "Recursion Pharma": "RXRX",      # 추가
+    "Rocket Lab": "RKLB",            # 추가
+    "마이크론": "MU",                 # 추가 (Micron)
+    "Credo Technology": "CRDO"       # 추가
 }
 
 selected_stock = st.sidebar.selectbox("종목 크게 보기", list(stocks.keys()))

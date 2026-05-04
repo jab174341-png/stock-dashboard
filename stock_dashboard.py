@@ -19,20 +19,25 @@ stocks = {
     "엔비디아": "NVDA",
     "마이크로소프트": "MSFT",
     "구글": "GOOGL",
-    "Recursion Pharma": "RXRX",      # 추가
-    "Rocket Lab": "RKLB",            # 추가
-    "마이크론": "MU",                 # 추가 (Micron)
-    "Credo Technology": "CRDO"       # 추가
+    "Recursion Pharma": "RXRX",
+    "Rocket Lab": "RKLB",
+    "마이크론": "MU",
+    "Credo Technology": "CRDO"
 }
 
 selected_stock = st.sidebar.selectbox("종목 크게 보기", list(stocks.keys()))
 
+# 차트 기간 선택
+period_options = {"5일": "5d", "1개월": "1mo", "3개월": "3mo", "6개월": "6mo"}
+selected_period = st.sidebar.selectbox("차트 기간 선택", list(period_options.keys()))
+
 placeholder = st.empty()
 
-def get_stock_data(ticker):
+def get_stock_data(ticker, period):
     stock = yf.Ticker(ticker)
     info = stock.info
-    hist = stock.history(period="5d")
+    hist = stock.history(period=period_options[period])
+    
     price = info.get('regularMarketPrice') or info.get('currentPrice')
     prev = info.get('regularMarketPreviousClose')
     change = price - prev if price and prev else 0
@@ -42,13 +47,13 @@ def get_stock_data(ticker):
 try:
     while True:
         with placeholder.container():
-            # 한국 시간 표시
             kst = datetime.now(timezone.utc) + timedelta(hours=9)
             st.subheader(f"🕒 {kst.strftime('%Y년 %m월 %d일 %H:%M:%S')} (한국 시간)")
 
+            # 전체 종목 카드
             cols = st.columns(5)
             for i, (name, ticker) in enumerate(stocks.items()):
-                info, hist, price, change, change_pct = get_stock_data(ticker)
+                _, _, price, change, change_pct = get_stock_data(ticker, "5d")
                 with cols[i % 5]:
                     st.metric(
                         label=f"**{name}**",
@@ -57,17 +62,23 @@ try:
                     )
 
             st.divider()
-            st.subheader(f"📊 {selected_stock} 상세 분석")
+            st.subheader(f"📊 {selected_stock} 상세 분석 ({selected_period})")
             
-            info, hist, price, change, change_pct = get_stock_data(stocks[selected_stock])
+            info, hist, price, change, change_pct = get_stock_data(stocks[selected_stock], selected_period)
             
             col1, col2 = st.columns([1, 2])
             with col1:
                 st.metric("현재가", f"{price:,.2f}", f"{change:+.2f} ({change_pct:+.2f}%)")
             
             with col2:
-                fig = go.Figure(data=[go.Candlestick(x=hist.index, open=hist['Open'], high=hist['High'], low=hist['Low'], close=hist['Close'])])
-                fig.update_layout(height=400, title=f"{selected_stock} 최근 5일 차트")
+                fig = go.Figure(data=[go.Candlestick(
+                    x=hist.index,
+                    open=hist['Open'],
+                    high=hist['High'],
+                    low=hist['Low'],
+                    close=hist['Close']
+                )])
+                fig.update_layout(height=500, title=f"{selected_stock} {selected_period} 차트")
                 st.plotly_chart(fig, use_container_width=True)
 
             st.caption("※ 1분마다 자동 업데이트 됩니다.")

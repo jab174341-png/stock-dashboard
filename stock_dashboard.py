@@ -26,7 +26,6 @@ stocks = {
 }
 
 selected_stock = st.sidebar.selectbox("종목 크게 보기", list(stocks.keys()))
-
 period_options = {"5일": "5d", "1개월": "1mo", "3개월": "3mo", "6개월": "6mo"}
 selected_period_label = st.sidebar.selectbox("차트 기간 선택", list(period_options.keys()))
 selected_period = period_options[selected_period_label]
@@ -78,7 +77,8 @@ try:
                     close=hist['Close']
                 )])
                 fig.update_layout(height=500, title=f"{selected_stock} {selected_period_label} 차트")
-                st.plotly_chart(fig, use_container_width=True)
+                # key를 매우 구체적으로 추가
+                st.plotly_chart(fig, use_container_width=True, key=f"chart_{selected_stock}_{selected_period_label}_{int(time.time())}")
 
             st.caption("※ 1분마다 자동 업데이트 됩니다.")
 

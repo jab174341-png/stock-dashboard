@@ -79,11 +79,7 @@ try:
                     close=hist['Close']
                 )])
                 fig.update_layout(height=500, title=f"{selected_stock} {selected_period_label} 차트")
-                st.plotly_chart(fig, use_container_width=True)
-
-            st.caption("※ 1분마다 자동 업데이트 됩니다.")
-
-        time.sleep(60)
-
-except Exception as e:
-    st.error(f"오류: {e}")
+                
+                # 핵심: 매번 다른 key를 줌
+                chart_key = f"chart_{selected_stock}_{selected_period_label}_{int(time.time())}"
+                st.plotly_chart(fig, use_container_width=True, key=chart_key)

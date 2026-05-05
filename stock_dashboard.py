@@ -22,10 +22,13 @@ stocks = {
     "Recursion Pharma": "RXRX",
     "Rocket Lab": "RKLB",
     "마이크론": "MU",
-    "Credo Technology": "CRDO"
+    "Credo Technology": "CRDO",
+    "LVMH (ADR)": "LVMUY",
+    "Hermes (ADR)": "HESAY"
 }
 
 selected_stock = st.sidebar.selectbox("종목 크게 보기", list(stocks.keys()))
+
 period_options = {"5일": "5d", "1개월": "1mo", "3개월": "3mo", "6개월": "6mo"}
 selected_period_label = st.sidebar.selectbox("차트 기간 선택", list(period_options.keys()))
 selected_period = period_options[selected_period_label]
@@ -48,7 +51,6 @@ try:
             kst = datetime.now(timezone.utc) + timedelta(hours=9)
             st.subheader(f"🕒 {kst.strftime('%Y년 %m월 %d일 %H:%M:%S')} (한국 시간)")
 
-            # 종목 카드
             cols = st.columns(5)
             for i, (name, ticker) in enumerate(stocks.items()):
                 _, _, price, change, change_pct = get_stock_data(ticker, "5d")
@@ -77,8 +79,7 @@ try:
                     close=hist['Close']
                 )])
                 fig.update_layout(height=500, title=f"{selected_stock} {selected_period_label} 차트")
-                # key를 매우 구체적으로 추가
-                st.plotly_chart(fig, use_container_width=True, key=f"chart_{selected_stock}_{selected_period_label}_{int(time.time())}")
+                st.plotly_chart(fig, use_container_width=True)
 
             st.caption("※ 1분마다 자동 업데이트 됩니다.")
 
